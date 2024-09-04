@@ -1,5 +1,7 @@
 package com.emazon.ms_user.domain.model;
 
+import com.emazon.ms_user.infra.out.jpa.entity.RoleEnum;
+
 import java.time.LocalDate;
 
 public class User {
@@ -11,7 +13,22 @@ public class User {
     private LocalDate birthDate;
     private String email;
     private String password;
-    private Role role;
+    private RoleEnum role;
+
+    public User() {
+    }
+
+    public User(Long id, String name, String lastName, Long idNumber, String number, LocalDate birthDate, String email, String password, RoleEnum role) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.idNumber = idNumber;
+        this.number = number;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
     public Long getId() {
         return id;
@@ -77,11 +94,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 }
