@@ -22,11 +22,11 @@ public class UserEntity {
     private Long id;
 
     @Column(nullable = ConsUtils.FALSE)
-    @Size(min = ConsUtils.LENGHT_OF_3, max = ConsUtils.LENGTH_OF_20)
+    @Size(min = ConsUtils.LENGTH_OF_3, max = ConsUtils.LENGTH_OF_20)
     private String name;
 
     @Column(nullable = ConsUtils.FALSE)
-    @Size(min = ConsUtils.LENGHT_OF_3, max = ConsUtils.LENGTH_OF_20)
+    @Size(min = ConsUtils.LENGTH_OF_3, max = ConsUtils.LENGTH_OF_20)
     private String lastName;
 
     @Column(nullable = ConsUtils.FALSE)

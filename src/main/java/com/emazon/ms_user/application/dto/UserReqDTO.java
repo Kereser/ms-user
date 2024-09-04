@@ -13,11 +13,11 @@ import lombok.*;
 public class UserReqDTO {
 
     @NotBlank
-    @Size(min = ConsUtils.LENGHT_OF_3, max = ConsUtils.LENGTH_OF_20)
+    @Size(min = ConsUtils.LENGTH_OF_3, max = ConsUtils.LENGTH_OF_20)
     private String name;
 
     @NotBlank
-    @Size(min = ConsUtils.LENGHT_OF_3, max = ConsUtils.LENGTH_OF_20)
+    @Size(min = ConsUtils.LENGTH_OF_3, max = ConsUtils.LENGTH_OF_20)
     private String lastName;
 
     @NotNull
@@ -27,7 +27,7 @@ public class UserReqDTO {
 
     @NotBlank
     @Pattern(regexp = "^(\\+57\\d{10}|\\d{10})$", message = ConsUtils.TELEPHONE_NUMBER_ERROR)
-    @Size(min = ConsUtils.LENGHT_OF_3, max = ConsUtils.LENGTH_OF_20)
+    @Size(min = ConsUtils.LENGTH_OF_3, max = ConsUtils.LENGTH_OF_20)
     private String number;
 
     @NotNull
