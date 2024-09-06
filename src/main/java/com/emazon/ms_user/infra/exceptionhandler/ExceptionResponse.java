@@ -1,4 +1,4 @@
-package com.emazon.ms_user.infra.exception_handler;
+package com.emazon.ms_user.infra.exceptionhandler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

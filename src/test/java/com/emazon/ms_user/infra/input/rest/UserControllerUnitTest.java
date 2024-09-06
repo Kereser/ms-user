@@ -4,7 +4,7 @@ import com.emazon.ms_user.ConsUtils;
 import com.emazon.ms_user.MvcUtils;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.handler.UserHandler;
-import com.emazon.ms_user.infra.exception_handler.ExceptionResponse;
+import com.emazon.ms_user.infra.exceptionhandler.ExceptionResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@WithMockUser(roles="ADMIN")
 class UserControllerUnitTest {
 
     @MockBean
@@ -53,7 +55,7 @@ class UserControllerUnitTest {
     void Should_Get201StatusCode_When_ValidPayload() throws Exception{
         userReqJSON = mapper.writeValueAsString(validUserReq);
 
-        sentPostToCreateEntity(userReqJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_USER_PARAM)).andExpect(status().isCreated());
+        sentPostToCreateEntity(userReqJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM)).andExpect(status().isCreated());
     }
 
     @Test
@@ -76,12 +78,12 @@ class UserControllerUnitTest {
         sentPostToCreateEntity(userReqJSON, ConsUtils.BASIC_USER_URL)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ConsUtils.FIELD_MESSAGE).value(ExceptionResponse.MISSING_REQUIRED_PARAM))
-                .andExpect(jsonPath(ConsUtils.FIELD_TYPE).value(ExceptionResponse.REQUIRED_PARAM));
+                .andExpect(jsonPath(ConsUtils.FIELD_ROLE).value(ExceptionResponse.REQUIRED_PARAM));
 
         sentPostToCreateEntity(userReqJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_NON_VALID_PARAM))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ConsUtils.FIELD_MESSAGE).value(ExceptionResponse.NOT_VALID_PARAM))
-                .andExpect(jsonPath(ConsUtils.FIELD_TYPE).value(ConsUtils.TYPE_NON_VALID_PARAM.get(ConsUtils.TYPE_PARAM)));
+                .andExpect(jsonPath(ConsUtils.FIELD_ROLE).value(ConsUtils.TYPE_NON_VALID_PARAM.get(ConsUtils.TYPE_PARAM)));
     }
 
     private void assertFieldErrors(ResultActions res, Integer numberOfFields) throws Exception {

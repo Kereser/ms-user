@@ -1,4 +1,4 @@
-package com.emazon.ms_user.infra.exception_handler;
+package com.emazon.ms_user.infra.exceptionhandler;
 
 import com.emazon.ms_user.infra.exception.EmailAlreadyExists;
 import com.emazon.ms_user.infra.exception.UnderAgeException;
