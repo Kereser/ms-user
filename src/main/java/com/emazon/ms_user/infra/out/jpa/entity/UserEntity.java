@@ -7,6 +7,8 @@ import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "users")
 @Getter
@@ -45,7 +47,16 @@ public class UserEntity {
     @Column(nullable = ConsUtils.FALSE)
     private String password;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = ConsUtils.FALSE)
-    private RoleEnum role;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH})
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> roles = new HashSet<>();
+
+    public void addRoles(Set<RoleEntity> roles) {
+        this.roles.addAll(roles);
+    }
 }

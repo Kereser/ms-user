@@ -2,8 +2,14 @@ package com.emazon.ms_user.domain.model;
 
 public class Role {
     private Long id;
-    private String name;
+    private RoleEnum name;
     private String description;
+
+    public Role(Long id, RoleEnum name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 
     public Long getId() {
         return id;
@@ -13,11 +19,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
+    public RoleEnum getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(RoleEnum name) {
         this.name = name;
     }
 
