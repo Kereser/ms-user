@@ -5,6 +5,7 @@ import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.domain.model.AuthSession;
 import com.emazon.ms_user.domain.model.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
@@ -12,5 +13,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface SessionDTOMapper {
     AuthSession toSession(AuthReqDTO dto);
+
+    @Mapping(source = "email", target = "username")
     User toUser(UserReqDTO dto);
 }

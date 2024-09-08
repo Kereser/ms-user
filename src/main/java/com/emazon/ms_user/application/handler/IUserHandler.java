@@ -5,4 +5,5 @@ import com.emazon.ms_user.domain.model.RoleEnum;
 
 public interface IUserHandler {
     void createUser(UserReqDTO dto, RoleEnum role);
+    String login();
 }
