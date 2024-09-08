@@ -1,6 +1,8 @@
 package com.emazon.ms_user.domain.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class User {
     private Long id;
@@ -11,7 +13,22 @@ public class User {
     private LocalDate birthDate;
     private String email;
     private String password;
-    private Role role;
+    private Set<Role> roles = new HashSet<>();
+
+    public User() {
+    }
+
+    public User(Long id, String name, String lastName, Long idNumber, String number, LocalDate birthDate, String email, String password, Set<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.idNumber = idNumber;
+        this.number = number;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.password = password;
+        this.addRoles(roles);
+    }
 
     public Long getId() {
         return id;
@@ -77,11 +94,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void addRoles(Set<Role> role) {
+        this.roles.addAll(role);
     }
 }
