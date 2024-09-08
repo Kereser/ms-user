@@ -36,11 +36,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers(HttpMethod.GET, "/users/login").permitAll();
                 auth.requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN");
-                auth.requestMatchers(HttpMethod.GET, "/users/login-2").hasRole("AUX_DEPOT");
+                auth.requestMatchers(HttpMethod.GET, "/users/login-2").hasRole("ADMIN");
 
                 auth.anyRequest().denyAll();
             });
 
+        http.anonymous(AbstractHttpConfigurer::disable);
         http.addFilterBefore(new JwtValidatorFilter(jwtEntryPoint), BasicAuthenticationFilter.class);
 
         return http.build();
