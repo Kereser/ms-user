@@ -1,5 +1,6 @@
 package com.emazon.ms_user.infra.input.rest;
 
+import com.emazon.ms_user.application.dto.RoleEnumReq;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.handler.IUserHandler;
 import com.emazon.ms_user.domain.model.RoleEnum;
@@ -17,18 +18,13 @@ public class UserController {
     private final IUserHandler handler;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserReqDTO dto, @RequestParam RoleEnum role) {
-        handler.createUser(dto, role);
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserReqDTO dto, @RequestParam RoleEnumReq role) {
+        handler.createUser(dto, RoleEnum.valueOf(role.name()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/login")
     public ResponseEntity<String> login() {
-        return ResponseEntity.ok("Hello login");
-    }
-
-    @GetMapping("/login-2")
-    public ResponseEntity<String> login2() {
-        return ResponseEntity.ok("Hello login-2");
+        return ResponseEntity.status(HttpStatus.OK).body(handler.login());
     }
 }

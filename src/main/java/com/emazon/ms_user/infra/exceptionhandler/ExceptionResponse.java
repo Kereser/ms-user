@@ -22,6 +22,9 @@ public class ExceptionResponse {
     public static final String NOT_VALID_PARAM = "Not valid request param";
     public static final String MISSING_REQUIRED_PARAM = "Not valid request param";
     public static final String REQUIRED_PARAM = "Required param";
+    public static final String EMAIL_NOT_FOUND = "Email could not be found.";
+    public static final String INVALID_TOKEN = "Invalid token.";
+    public static final String INVALID_CREDENTIALS = "Invalid credentials.";
     public static final String BIRTH_DAY_CONSTRAINS = "Birth day doesn't meet the constrains.";
 
     public static final String USER_MUST_BE_OLDER = "User must be older.";

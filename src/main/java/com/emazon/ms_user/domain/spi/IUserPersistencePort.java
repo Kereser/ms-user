@@ -6,6 +6,6 @@ import com.emazon.ms_user.domain.model.User;
 import java.util.Optional;
 
 public interface IUserPersistencePort {
-    Optional<User> findByEmail(String name);
+    Optional<User> findByUsername(String username);
     void createUser(User user, RoleEnum role);
 }

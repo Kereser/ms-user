@@ -11,21 +11,21 @@ public class User {
     private Long idNumber;
     private String number;
     private LocalDate birthDate;
-    private String email;
+    private String username;
     private String password;
     private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(Long id, String name, String lastName, Long idNumber, String number, LocalDate birthDate, String email, String password, Set<Role> roles) {
+    public User(Long id, String name, String lastName, Long idNumber, String number, LocalDate birthDate, String username, String password, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.idNumber = idNumber;
         this.number = number;
         this.birthDate = birthDate;
-        this.email = email;
+        this.username = username;
         this.password = password;
         this.addRoles(roles);
     }
@@ -78,12 +78,12 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -98,7 +98,7 @@ public class User {
         return roles;
     }
 
-    public void addRoles(Set<Role> role) {
-        this.roles.addAll(role);
+    public void addRoles(Set<Role> roles) {
+        this.roles.addAll(roles);
     }
 }
