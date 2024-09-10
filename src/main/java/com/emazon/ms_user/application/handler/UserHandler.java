@@ -1,5 +1,6 @@
 package com.emazon.ms_user.application.handler;
 
+import com.emazon.ms_user.application.dto.AuthResDTO;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.mapper.UserDTOMapper;
 import com.emazon.ms_user.domain.api.IUserServicePort;
@@ -24,8 +25,9 @@ public class UserHandler implements IUserHandler {
     }
 
     @Override
-    public String login() {
-        return JwtUtils.createToken(SecurityContextHolder.getContext().getAuthentication());
+    public AuthResDTO login() {
+        return AuthResDTO.builder()
+                .token(JwtUtils.createToken(SecurityContextHolder.getContext().getAuthentication()))
+                .build();
     }
-
 }

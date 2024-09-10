@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         try {
-            if (jwtToken != null && !jwtToken.substring(0,5).equalsIgnoreCase("basic")) {
+            if (jwtToken != null && !StringUtils.startsWithIgnoreCase(jwtToken, "basic")) {
                 jwtToken = jwtToken.substring(7);
 
                 DecodedJWT decodedJWT = JwtUtils.validateToken(jwtToken);
