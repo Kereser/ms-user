@@ -1,5 +1,6 @@
 package com.emazon.ms_user.infra.input.rest;
 
+import com.emazon.ms_user.application.dto.AuthResDTO;
 import com.emazon.ms_user.application.dto.RoleEnumReq;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.handler.IUserHandler;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<String> login() {
+    public ResponseEntity<AuthResDTO> login() {
         return ResponseEntity.status(HttpStatus.OK).body(handler.login());
     }
 }

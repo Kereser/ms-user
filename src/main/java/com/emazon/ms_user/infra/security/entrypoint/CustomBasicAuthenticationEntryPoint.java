@@ -22,7 +22,7 @@ public class CustomBasicAuthenticationEntryPoint implements AuthenticationEntryP
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        if (authException.getCause() instanceof AuthenticationException) {
+        if (authException.getCause() == null || authException.getCause() instanceof AuthenticationException) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

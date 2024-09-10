@@ -22,8 +22,8 @@ public class ConsUtils {
     public static final String BIRTH_DATE_STRING = "1999-09-09";
 
     public static final String BIRTH_DATE = "birthDate";
-    public static final String USER_ID = "userId";
 
+    public static final String FIELD_TOKEN = "$.token";
     public static final String FIELD_ERROR = "$.fieldErrors";
     public static final String FIELD_MESSAGE = "$.message";
     public static final String FIELD_ROLE = "$.fieldErrors.role";

@@ -7,6 +7,7 @@ import com.emazon.ms_user.infra.security.filter.JwtValidatorFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -27,6 +28,8 @@ public class SecurityConfig {
 
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
 
+    private static final String ADMIN = "ADMIN";
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomJWTEntryPoint jwtEntryPoint) throws Exception {
         http
@@ -35,8 +38,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers(HttpMethod.GET, "/users/login").permitAll();
-                auth.requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN");
-                auth.requestMatchers(HttpMethod.GET, "/users/login-2").hasRole("ADMIN");
+                auth.requestMatchers(HttpMethod.POST, "/users").hasRole(ADMIN);
 
                 auth.anyRequest().denyAll();
             });
@@ -48,6 +50,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Profile("!test")
     public AuthenticationManager authenticationManager(
             UserDetailsService userDetailsServiceImpl,
             PasswordEncoder passwordEncoder) {
@@ -59,6 +62,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Profile("!test")
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoderImpl().getEncoder();
     }
