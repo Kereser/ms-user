@@ -69,14 +69,14 @@ class UserControllerIntegrationTest {
     private static final String BASIC_DEFAULT_AUTH = "Basic " +
             Base64.getEncoder().encodeToString((USER + ":" + PASSWORD).getBytes());
 
-    private static final Optional<UserEntity> OPTIONAL_USER_ENTITY = Optional.of(UserEntity.builder().username(USER)
+    private static final UserEntity USER_ENTITY = UserEntity.builder().username(USER)
             .password("{noop}" + PASSWORD)
             .accountNonExpired(true)
             .accountNonLocked(true)
             .enabled(true)
             .credentialsNonExpired(true)
             .roles(Set.of(RoleEntity.builder().name(RoleEnum.ADMIN).build()))
-            .build());
+            .build();
 
     @Test
     void Should_SaveAUX_DEPOT_When_ValidPayloadAndValidation() throws Exception {
@@ -127,7 +127,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void Should_GetValidToken_When_ValidCredentials() throws Exception {
-        Mockito.doReturn(OPTIONAL_USER_ENTITY)
+        Mockito.doReturn(Optional.of(USER_ENTITY))
                 .when(userJpaRepository).findByUsername(Mockito.anyString());
 
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.get(LOGIN_ENDPOINT)
