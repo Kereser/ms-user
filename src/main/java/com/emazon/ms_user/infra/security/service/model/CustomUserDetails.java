@@ -9,15 +9,15 @@ import java.util.Collection;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class CustomUserDetail extends User {
+public class CustomUserDetails extends User {
     private final Long userId;
 
-    public CustomUserDetail(String username, String password, Collection<? extends GrantedAuthority> authorities, Long userId) {
+    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, Long userId) {
         super(username, password, authorities);
         this.userId = userId;
     }
 
-    public CustomUserDetail(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, Long userId) {
+    public CustomUserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, Long userId) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.userId = userId;
     }
