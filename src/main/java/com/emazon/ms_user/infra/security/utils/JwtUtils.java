@@ -83,4 +83,8 @@ public class JwtUtils {
     public static String getAuthorities(DecodedJWT decodedJWT) {
         return decodedJWT.getClaim(AUTHORITIES).asString();
     }
+
+    public static <T> T getClaimAs(String claim, DecodedJWT decodedJWT, Class<T> asClass) {
+        return decodedJWT.getClaim(claim).as(asClass);
+    }
 }
