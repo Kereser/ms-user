@@ -2,6 +2,7 @@ package com.emazon.ms_user.infra.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.emazon.ms_user.infra.security.entrypoint.CustomJWTEntryPoint;
+import com.emazon.ms_user.infra.security.service.model.CustomUserDetails;
 import com.emazon.ms_user.infra.security.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,23 +31,31 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
 
     private static final String UNEXPECTED_EXCEPTION = "Unexpected exception";
 
+    private static final String BASIC = "basic";
+    private static final Integer SUBSTRING_INDEX = 7;
+
+    private static final String USER_ID = "userId";
+    private static final String PASSWORD = "password";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         try {
-            if (jwtToken != null && !StringUtils.startsWithIgnoreCase(jwtToken, "basic")) {
-                jwtToken = jwtToken.substring(7);
+            if (jwtToken != null && !StringUtils.startsWithIgnoreCase(jwtToken, BASIC)) {
+                jwtToken = jwtToken.substring(SUBSTRING_INDEX);
 
                 DecodedJWT decodedJWT = JwtUtils.validateToken(jwtToken);
 
                 String username = JwtUtils.getUsername(decodedJWT);
                 String authorityList = JwtUtils.getAuthorities(decodedJWT);
-
+                Long userId = JwtUtils.getClaimAs(USER_ID, decodedJWT, Long.class);
                 List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authorityList);
 
+                CustomUserDetails userDetails = new CustomUserDetails(username, PASSWORD, authorities, userId);
+
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
-                Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, jwtToken, authorities);
                 context.setAuthentication(auth);
                 SecurityContextHolder.setContext(context);
             }

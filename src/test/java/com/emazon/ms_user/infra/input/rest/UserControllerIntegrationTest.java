@@ -8,6 +8,7 @@ import com.emazon.ms_user.infra.exceptionhandler.ExceptionResponse;
 import com.emazon.ms_user.infra.out.jpa.entity.RoleEntity;
 import com.emazon.ms_user.infra.out.jpa.entity.UserEntity;
 import com.emazon.ms_user.infra.out.jpa.repository.UserJpaRepository;
+import com.emazon.ms_user.infra.security.service.model.CustomUserDetails;
 import com.emazon.ms_user.infra.security.utils.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -62,6 +63,7 @@ class UserControllerIntegrationTest {
 
     private static final String USER = "testuser";
     private static final String PASSWORD = "password";
+    private static final Long USER_ID = 1l;
 
     private static final String AUTHORIZATION = "Authorization";
     private static final String LOGIN_ENDPOINT = "/users/login";
@@ -79,7 +81,7 @@ class UserControllerIntegrationTest {
             .build();
 
     @Test
-    void Should_SaveAUX_DEPOT_When_ValidPayloadAndValidation() throws Exception {
+    void Should_SaveAuxDepot_When_ValidPayloadAndValidation() throws Exception {
         validReqUserJSON = mapper.writeValueAsString(USER_REQ_DTO);
         postWithAdminToken(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
                 .andExpect(status().isCreated());
@@ -135,7 +137,6 @@ class UserControllerIntegrationTest {
                             .andExpect(status().isOk());
 
         res.andExpect(jsonPath(ConsUtils.FIELD_TOKEN).isNotEmpty());
-        Mockito.reset(userJpaRepository);
     }
 
     @Test
@@ -171,8 +172,7 @@ class UserControllerIntegrationTest {
     }
 
     private String getAdminToken() {
-        return JwtUtils.createToken(new UsernamePasswordAuthenticationToken(USER,
-                null,
-                Set.of(new SimpleGrantedAuthority("ROLE_".concat("ADMIN")))));
+        CustomUserDetails userDetail = new CustomUserDetails(USER, PASSWORD, Set.of(new SimpleGrantedAuthority("ROLE_".concat("ADMIN"))), USER_ID);
+        return JwtUtils.createToken(new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities()));
     }
 }
