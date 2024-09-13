@@ -4,6 +4,7 @@ import com.emazon.ms_user.infra.exception.EmailAlreadyExists;
 import com.emazon.ms_user.infra.exception.UnderAgeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -56,5 +57,11 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.builder()
                 .message(ExceptionResponse.EMAIL_CONSTRAINS)
                 .fieldErrors(Map.of(ex.getField(), ExceptionResponse.EMAIL_MUST_BE_UNIQUE)).build());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleBadRequestOnConstrains(HttpMessageNotReadableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.builder().message(ex.getMessage().split(":")[0]).build());
     }
 }
