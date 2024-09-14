@@ -1,5 +1,6 @@
 package com.emazon.ms_user.infra.config;
 
+import com.emazon.ms_user.ConsUtils;
 import com.emazon.ms_user.infra.security.PasswordEncoderImpl;
 import com.emazon.ms_user.infra.security.entrypoint.CustomBasicAuthenticationEntryPoint;
 import com.emazon.ms_user.infra.security.entrypoint.CustomJWTEntryPoint;
@@ -29,6 +30,10 @@ public class SecurityConfig {
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
 
     private static final String ADMIN = "ADMIN";
+    private static final String AUX_DEPOT_PATH = ConsUtils.builderPath().withAuxDepot().build();
+    private static final String CLIENT_PATH = ConsUtils.builderPath().withClient().build();
+    private static final String LOGIN_PATH = ConsUtils.builderPath().withLogin().build();
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomJWTEntryPoint jwtEntryPoint) throws Exception {
@@ -37,8 +42,9 @@ public class SecurityConfig {
             .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
-                auth.requestMatchers(HttpMethod.GET, "/users/login").permitAll();
-                auth.requestMatchers(HttpMethod.POST, "/users").hasRole(ADMIN);
+                auth.requestMatchers(HttpMethod.GET, LOGIN_PATH).permitAll();
+                auth.requestMatchers(HttpMethod.POST, AUX_DEPOT_PATH).hasRole(ADMIN);
+                auth.requestMatchers(HttpMethod.POST, CLIENT_PATH).permitAll();
 
                 auth.anyRequest().denyAll();
             });

@@ -17,9 +17,6 @@ public class ExceptionResponse {
     public static final String NOT_NULL = "must not be null";
     public static final String NOT_BLANK = "must not be blank";
     public static final String FIELD_VALIDATION_ERRORS = "Request has field validation errors";
-    public static final String NOT_VALID_PARAM = "Not valid request param";
-    public static final String MISSING_REQUIRED_PARAM = "Not valid request param";
-    public static final String REQUIRED_PARAM = "Required param";
     public static final String EMAIL_NOT_FOUND = "Email could not be found.";
     public static final String INVALID_TOKEN = "Invalid token.";
     public static final String BIRTH_DAY_CONSTRAINS = "Birth day doesn't meet the constrains.";
