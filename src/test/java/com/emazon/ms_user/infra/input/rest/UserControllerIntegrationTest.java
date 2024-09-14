@@ -63,7 +63,7 @@ class UserControllerIntegrationTest {
 
     private static final String USER = "testuser";
     private static final String PASSWORD = "password";
-    private static final Long USER_ID = 1l;
+    private static final Long USER_ID = 1L;
 
     private static final String AUTHORIZATION = "Authorization";
     private static final String LOGIN_ENDPOINT = "/users/login";
@@ -113,17 +113,17 @@ class UserControllerIntegrationTest {
     /*** Security ***/
 
     @Test
-    void Should_ThrowsException_When_NonAuthenticatedUser() throws Exception {
-        validReqUserJSON = mapper.writeValueAsString(USER_REQ_DTO);
-        sentPostToCreateEntity(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
+    void Should_ThrowsException_When_NotAuthenticatedUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(ConsUtils.BASIC_USER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(mapper.writeValueAsString(USER_REQ_DTO)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser
     void Should_ThrowsException_When_NotValidRoles() throws Exception {
-        validReqUserJSON = mapper.writeValueAsString(USER_REQ_DTO);
-        sentPostToCreateEntity(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
+        sentPostToCreateEntity(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
                 .andExpect(status().isForbidden());
     }
 
@@ -137,6 +137,7 @@ class UserControllerIntegrationTest {
                             .andExpect(status().isOk());
 
         res.andExpect(jsonPath(ConsUtils.FIELD_TOKEN).isNotEmpty());
+        Mockito.reset(userJpaRepository);
     }
 
     @Test
@@ -147,6 +148,8 @@ class UserControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get(LOGIN_ENDPOINT)
             .header(AUTHORIZATION, BASIC_DEFAULT_AUTH))
             .andExpect(status().isUnauthorized());
+
+        Mockito.reset(userJpaRepository);
     }
 
     @Test
