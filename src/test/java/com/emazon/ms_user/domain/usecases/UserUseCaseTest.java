@@ -33,9 +33,9 @@ class UserUseCaseTest {
     @InjectMocks
     private UserUseCase userUseCase;
 
-    private Role role = new Role(ConsUtils.LONG_ONE, RoleEnum.AUX_DEPOT, ConsUtils.AUX_DEPOT_DESCRIPTION);
+    private final Role role = new Role(ConsUtils.LONG_ONE, RoleEnum.AUX_DEPOT, ConsUtils.AUX_DEPOT_DESCRIPTION);
 
-    private User validUser = new User(
+    private final User validUser = new User(
     ConsUtils.LONG_ONE,
     ConsUtils.NAME,
     ConsUtils.LAST_NAME,
@@ -67,7 +67,23 @@ class UserUseCaseTest {
 
         userUseCase.createUser(validUser, RoleEnum.AUX_DEPOT);
 
-        Mockito.verify(userPersistencePort, Mockito.times(1)).createUser(validUser, RoleEnum.AUX_DEPOT);
-        Mockito.verify(userPersistencePort, Mockito.times(1)).findByUsername(Mockito.anyString());
+        Mockito.verify(userPersistencePort, Mockito.times(ConsUtils.INTEGER_1)).createUser(validUser, RoleEnum.AUX_DEPOT);
+        Mockito.verify(userPersistencePort, Mockito.times(ConsUtils.INTEGER_1)).findByUsername(Mockito.anyString());
+    }
+
+    @Test
+    void Should_CallToSaveAux_When_CreateAuxDepot() {
+        UserUseCase spyUserUseCase = Mockito.spy(userUseCase);
+        spyUserUseCase.createAuxDepotUser(validUser);
+
+        Mockito.verify(spyUserUseCase, Mockito.times(ConsUtils.INTEGER_1)).createUser(validUser, RoleEnum.AUX_DEPOT);
+    }
+
+    @Test
+    void Should_CallToSaveClient_When_CreateClient() {
+        UserUseCase spyUserUseCase = Mockito.spy(userUseCase);
+        spyUserUseCase.createClientUser(validUser);
+
+        Mockito.verify(spyUserUseCase, Mockito.times(ConsUtils.INTEGER_1)).createUser(validUser, RoleEnum.CLIENT);
     }
 }

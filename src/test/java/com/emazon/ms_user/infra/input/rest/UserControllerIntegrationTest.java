@@ -1,7 +1,6 @@
 package com.emazon.ms_user.infra.input.rest;
 
 import com.emazon.ms_user.ConsUtils;
-import com.emazon.ms_user.MvcUtils;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.domain.model.RoleEnum;
 import com.emazon.ms_user.infra.exceptionhandler.ExceptionResponse;
@@ -24,15 +23,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -59,12 +57,11 @@ class UserControllerIntegrationTest {
             ConsUtils.EMAIL,
             ConsUtils.PASSWORD);
 
-    private String validReqUserJSON;
-
     private static final String USER = "testuser";
     private static final String PASSWORD = "password";
     private static final Long USER_ID = 1L;
 
+    private static final String ROLE = "ROLE_";
     private static final String AUTHORIZATION = "Authorization";
     private static final String LOGIN_ENDPOINT = "/users/login";
     private static final String BEARER = "Bearer ";
@@ -81,40 +78,48 @@ class UserControllerIntegrationTest {
             .build();
 
     @Test
-    void Should_SaveAuxDepot_When_ValidPayloadAndValidation() throws Exception {
-        validReqUserJSON = mapper.writeValueAsString(USER_REQ_DTO);
-        postWithAdminToken(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
+    void Should_SaveAuxDepot_When_Valid() throws Exception {
+        postWithAdminToken(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.builderPath().withAuxDepot().build())
                 .andExpect(status().isCreated());
     }
 
     @Test
-    @WithMockUser(roles="ADMIN")
+    void Should_SaveClient_When_Valid() throws Exception {
+        postWithAdminToken(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.builderPath().withClient().build())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void Should_ThrowsException_When_NotBodyPresent() throws Exception {
+        mockMvc.perform(post(ConsUtils.builderPath().withClient().build())).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void Should_GetValidErrorStructure_When_EmailExistsOrUnderAge() throws Exception {
         USER_REQ_DTO.setBirthDate(LocalDate.now().toString());
-        validReqUserJSON = mapper.writeValueAsString(USER_REQ_DTO);
-        ResultActions res = sentPostToCreateEntity(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM));
 
         // Birthdate error
-        res.andExpect(status().isBadRequest())
+        postWithAdminToken(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.builderPath().withAuxDepot().build())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ConsUtils.FIELD_MESSAGE).value(ExceptionResponse.USER_MUST_BE_OLDER))
                 .andExpect(jsonPath(ConsUtils.FIELD_BIRTH_DATE_PATH).value(ExceptionResponse.BIRTH_DAY_CONSTRAINS));
 
         // Email already exists.
         USER_REQ_DTO.setBirthDate(ConsUtils.BIRTH_DATE_STRING);
-        validReqUserJSON = mapper.writeValueAsString(USER_REQ_DTO);
-        sentPostToCreateEntity(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM)).andExpect(status().isCreated());
+        postWithAdminToken(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.builderPath().withAuxDepot().build())
+                .andExpect(status().isCreated());
 
-        sentPostToCreateEntity(validReqUserJSON, ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
+        postWithAdminToken(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.builderPath().withAuxDepot().build())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ConsUtils.FIELD_MESSAGE).value(ExceptionResponse.EMAIL_CONSTRAINS))
                 .andExpect(jsonPath(ConsUtils.FIELD_EMAIL_PATH).value(ExceptionResponse.EMAIL_MUST_BE_UNIQUE));
     }
 
-    /*** Security ***/
 
+    /*** Security ***/
     @Test
     void Should_ThrowsException_When_NotAuthenticatedUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(ConsUtils.BASIC_USER_URL)
+        mockMvc.perform(post(ConsUtils.builderPath().withAuxDepot().build())
                         .contentType(MediaType.APPLICATION_JSON)
                         .contentType(mapper.writeValueAsString(USER_REQ_DTO)))
                 .andExpect(status().isUnauthorized());
@@ -123,7 +128,7 @@ class UserControllerIntegrationTest {
     @Test
     @WithMockUser
     void Should_ThrowsException_When_NotValidRoles() throws Exception {
-        sentPostToCreateEntity(mapper.writeValueAsString(USER_REQ_DTO), ConsUtils.BASIC_USER_URL, MvcUtils.buildParams(ConsUtils.TYPE_AUX_DEPOT_PARAM))
+        mockMvc.perform(post(ConsUtils.builderPath().withAuxDepot().build()).content(mapper.writeValueAsString(USER_REQ_DTO)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 
@@ -132,11 +137,11 @@ class UserControllerIntegrationTest {
         Mockito.doReturn(Optional.of(USER_ENTITY))
                 .when(userJpaRepository).findByUsername(Mockito.anyString());
 
-        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.get(LOGIN_ENDPOINT)
-                            .header(AUTHORIZATION, BASIC_DEFAULT_AUTH))
-                            .andExpect(status().isOk());
+        mockMvc.perform(get(LOGIN_ENDPOINT)
+                    .header(AUTHORIZATION, BASIC_DEFAULT_AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(ConsUtils.FIELD_TOKEN).isNotEmpty());
 
-        res.andExpect(jsonPath(ConsUtils.FIELD_TOKEN).isNotEmpty());
         Mockito.reset(userJpaRepository);
     }
 
@@ -145,7 +150,7 @@ class UserControllerIntegrationTest {
         Mockito.doReturn(Optional.empty())
                 .when(userJpaRepository).findByUsername(Mockito.anyString());
 
-        mockMvc.perform(MockMvcRequestBuilders.get(LOGIN_ENDPOINT)
+        mockMvc.perform(get(LOGIN_ENDPOINT)
             .header(AUTHORIZATION, BASIC_DEFAULT_AUTH))
             .andExpect(status().isUnauthorized());
 
@@ -154,28 +159,20 @@ class UserControllerIntegrationTest {
 
     @Test
     void Should_ThrowsException_When_InvalidToken() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(LOGIN_ENDPOINT)
+        mockMvc.perform(get(LOGIN_ENDPOINT)
                         .header(AUTHORIZATION, BEARER + " "))
                 .andExpect(status().isUnauthorized());
     }
 
-    private ResultActions sentPostToCreateEntity(String dto, String url, MultiValueMap<String, String> params) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.post(url)
-                .params(params)
-                .content(dto)
-                .contentType(MediaType.APPLICATION_JSON));
-    }
-
-    private ResultActions postWithAdminToken(String dto, String url, MultiValueMap<String, String> params) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.post(url)
+    private ResultActions postWithAdminToken(String dto, String url) throws Exception {
+        return mockMvc.perform(post(url)
                 .header(AUTHORIZATION, BEARER + getAdminToken())
-                .params(params)
                 .content(dto)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
     private String getAdminToken() {
-        CustomUserDetails userDetail = new CustomUserDetails(USER, PASSWORD, Set.of(new SimpleGrantedAuthority("ROLE_".concat("ADMIN"))), USER_ID);
+        CustomUserDetails userDetail = new CustomUserDetails(USER, PASSWORD, Set.of(new SimpleGrantedAuthority(ROLE.concat(ConsUtils.ADMIN))), USER_ID);
         return JwtUtils.createToken(new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities()));
     }
 }
