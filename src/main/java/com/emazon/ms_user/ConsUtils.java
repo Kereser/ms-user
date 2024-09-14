@@ -1,9 +1,11 @@
 package com.emazon.ms_user;
 
-import java.util.Map;
-
 public class ConsUtils {
     private ConsUtils() {
+    }
+
+    public static PathBuilder builderPath() {
+        return new PathBuilder();
     }
 
     public static final String TELEPHONE_NUMBER_ERROR = "Number must have 10 digits or 13 with +57.";
@@ -26,7 +28,6 @@ public class ConsUtils {
     public static final String FIELD_TOKEN = "$.token";
     public static final String FIELD_ERROR = "$.fieldErrors";
     public static final String FIELD_MESSAGE = "$.message";
-    public static final String FIELD_ROLE = "$.fieldErrors.role";
     public static final String FIELD_NAME_PATH = "$.fieldErrors.name";
     public static final String FIELD_LAST_NAME_PATH = "$.fieldErrors.lastName";
     public static final String FIELD_NUMBER_PATH = "$.fieldErrors.number";
@@ -37,12 +38,11 @@ public class ConsUtils {
     public static final Integer FIELD_WITH_ERRORS_AT_USER = 7;
 
     public static final Long LONG_ONE = 1L;
-
-    public static final Map<String, String> TYPE_AUX_DEPOT_PARAM = Map.of("role", "AUX_DEPOT");
-    public static final Map<String, String> TYPE_NON_VALID_PARAM = Map.of("role", "NonValidType");
-    public static final String TYPE_PARAM = "role";
+    public static final Integer INTEGER_1 = 1;
 
     public static final String BASIC_USER_URL = "/users";
+    public static final String CLIENT = "CLIENT";
+    public static final String ADMIN = "ADMIN";
 
     /*** DB ***/
     public static final boolean FALSE = false;
@@ -50,4 +50,27 @@ public class ConsUtils {
     public static final int LENGTH_OF_10 = 10;
     public static final int LENGTH_OF_13 = 13;
     public static final int LENGTH_OF_20 = 20;
+
+    public static class PathBuilder {
+        private String finalPath = BASIC_USER_URL;
+
+        public PathBuilder withAuxDepot() {
+            this.finalPath += "/aux-depot";
+            return this;
+        }
+
+        public PathBuilder withLogin() {
+            this.finalPath += "/login";
+            return this;
+        }
+
+        public PathBuilder withClient() {
+            this.finalPath += "/client";
+            return this;
+        }
+
+        public String build() {
+            return finalPath;
+        }
+    }
 }

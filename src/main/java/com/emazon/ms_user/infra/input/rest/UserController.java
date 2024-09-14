@@ -1,10 +1,8 @@
 package com.emazon.ms_user.infra.input.rest;
 
 import com.emazon.ms_user.application.dto.AuthResDTO;
-import com.emazon.ms_user.application.dto.RoleEnumReq;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.handler.IUserHandler;
-import com.emazon.ms_user.domain.model.RoleEnum;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,9 +16,15 @@ public class UserController {
 
     private final IUserHandler handler;
 
-    @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserReqDTO dto, @RequestParam RoleEnumReq role) {
-        handler.createUser(dto, RoleEnum.valueOf(role.name()));
+    @PostMapping("/aux-depot")
+    public ResponseEntity<Void> createAuxDepotUser(@RequestBody @Valid UserReqDTO dto) {
+        handler.createAuxDepotUser(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/client")
+    public ResponseEntity<Void> createUserClient(@RequestBody @Valid UserReqDTO dto) {
+        handler.createClientUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

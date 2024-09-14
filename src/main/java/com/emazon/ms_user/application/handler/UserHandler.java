@@ -4,7 +4,6 @@ import com.emazon.ms_user.application.dto.AuthResDTO;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.mapper.UserDTOMapper;
 import com.emazon.ms_user.domain.api.IUserServicePort;
-import com.emazon.ms_user.domain.model.RoleEnum;
 import com.emazon.ms_user.infra.security.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +19,13 @@ public class UserHandler implements IUserHandler {
     private final UserDTOMapper userDTOMapper;
 
     @Override
-    public void createUser(UserReqDTO dto, RoleEnum role) {
-        userServicePort.createUser(userDTOMapper.toUser(dto), role);
+    public void createClientUser(UserReqDTO dto) {
+        userServicePort.createClientUser(userDTOMapper.toUser(dto));
+    }
+
+    @Override
+    public void createAuxDepotUser(UserReqDTO dto) {
+        userServicePort.createAuxDepotUser(userDTOMapper.toUser(dto));
     }
 
     @Override
