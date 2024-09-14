@@ -33,4 +33,14 @@ public class UserUseCase implements IUserServicePort {
 
         userPersistencePort.createUser(user, role);
     }
+
+    @Override
+    public void createAuxDepotUser(User user) {
+        createUser(user, RoleEnum.AUX_DEPOT);
+    }
+
+    @Override
+    public void createClientUser(User user) {
+        createUser(user, RoleEnum.CLIENT);
+    }
 }
