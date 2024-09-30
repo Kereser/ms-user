@@ -8,6 +8,10 @@ public class ConsUtils {
         return new PathBuilder();
     }
 
+    public static final String COMMA_DELIMITER = ",";
+    public static final Long PLUS_30_MINUTES = 1800000L;
+    public static final Long PLUS_1_DAY = 86400000L;
+
     public static final String TELEPHONE_NUMBER_ERROR = "Number must have 10 digits or 13 with +57.";
     public static final String PASSWORD_ERROR = "Password doesn't meet constrains.";
     public static final String EMAIL_ERROR = "Email doesn't meet constrains.";
@@ -41,6 +45,7 @@ public class ConsUtils {
     public static final Integer INTEGER_1 = 1;
 
     public static final String BASIC_USER_URL = "/users";
+    public static final String CLIENT_URL = "/client";
     public static final String CLIENT = "CLIENT";
     public static final String ADMIN = "ADMIN";
 
@@ -65,7 +70,7 @@ public class ConsUtils {
         }
 
         public PathBuilder withClient() {
-            this.finalPath += "/client";
+            this.finalPath += CLIENT_URL;
             return this;
         }
 

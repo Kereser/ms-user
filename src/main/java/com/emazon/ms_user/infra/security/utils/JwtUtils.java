@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.emazon.ms_user.ConsUtils;
 import com.emazon.ms_user.infra.exception.InvalidBearerTokenException;
 import com.emazon.ms_user.infra.security.service.model.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +49,7 @@ public class JwtUtils {
         String authorities = userDetail.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(ConsUtils.COMMA_DELIMITER));
 
         return JWT.create()
                 .withIssuer(userGenerator)
@@ -56,7 +57,7 @@ public class JwtUtils {
                 .withClaim(AUTHORITIES, authorities)
                 .withClaim(USER_ID, userId)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + ConsUtils.PLUS_1_DAY))
                 .withJWTId(UUID.randomUUID().toString())
                 .withNotBefore(new Date(System.currentTimeMillis()))
                 .sign(algorithm);

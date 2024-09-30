@@ -1,5 +1,6 @@
 package com.emazon.ms_user.infra.input.rest;
 
+import com.emazon.ms_user.ConsUtils;
 import com.emazon.ms_user.application.dto.AuthResDTO;
 import com.emazon.ms_user.application.dto.UserReqDTO;
 import com.emazon.ms_user.application.handler.IUserHandler;
@@ -22,7 +23,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/client")
+    @PostMapping(ConsUtils.CLIENT_URL)
     public ResponseEntity<Void> createUserClient(@RequestBody @Valid UserReqDTO dto) {
         handler.createClientUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
