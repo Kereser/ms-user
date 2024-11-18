@@ -80,7 +80,7 @@ public class UserEntity {
 
     public List<SimpleGrantedAuthority> getAuthorities() {
         return this.roles.stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_".concat(r.getName().name())))
+                .map(r -> new SimpleGrantedAuthority(ConsUtils.ROLE.concat(r.getName().name())))
                 .toList();
     }
 }

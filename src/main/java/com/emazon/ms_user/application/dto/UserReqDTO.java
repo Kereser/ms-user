@@ -26,12 +26,12 @@ public class UserReqDTO {
     private Long idNumber;
 
     @NotBlank
-    @Pattern(regexp = "^(\\+57\\d{10}|\\d{10})$", message = ConsUtils.TELEPHONE_NUMBER_ERROR)
+    @Pattern(regexp = ConsUtils.PHONE_NUMBER_REGEX, message = ConsUtils.TELEPHONE_NUMBER_ERROR)
     @Size(min = ConsUtils.LENGTH_OF_3, max = ConsUtils.LENGTH_OF_20)
     private String number;
 
     @NotNull
-    @Pattern(regexp = "^(\\d{4}-\\d{2}-\\d{2})$", message = ConsUtils.DATE_ERROR)
+    @Pattern(regexp = ConsUtils.DATE_REGEX, message = ConsUtils.DATE_ERROR)
     private String birthDate;
 
     @NotBlank
@@ -39,6 +39,6 @@ public class UserReqDTO {
     private String email;
 
     @NotBlank
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*\\W).{7,}$", message = ConsUtils.PASSWORD_ERROR)
+    @Pattern(regexp = ConsUtils.PASSWORD_REGEX, message = ConsUtils.PASSWORD_ERROR)
     private String password;
 }

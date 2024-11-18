@@ -57,19 +57,13 @@ class UserControllerIntegrationTest {
             ConsUtils.EMAIL,
             ConsUtils.PASSWORD);
 
-    private static final String USER = "testuser";
     private static final String PASSWORD = "password";
-    private static final Long USER_ID = 1L;
-
-    private static final String ROLE = "ROLE_";
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String LOGIN_ENDPOINT = "/users/login";
-    private static final String BEARER = "Bearer ";
     private static final String BASIC_DEFAULT_AUTH = "Basic " +
-            Base64.getEncoder().encodeToString((USER + ":" + PASSWORD).getBytes());
+            Base64.getEncoder().encodeToString((ConsUtils.USER + ConsUtils.COLON_DELIMITER + PASSWORD).getBytes());
 
-    private static final UserEntity USER_ENTITY = UserEntity.builder().username(USER)
-            .password("{noop}" + PASSWORD)
+
+    private static final UserEntity USER_ENTITY = UserEntity.builder().username(ConsUtils.USER)
+            .password(ConsUtils.NOOP_PASSWORD + PASSWORD)
             .accountNonExpired(true)
             .accountNonLocked(true)
             .enabled(true)
@@ -137,8 +131,8 @@ class UserControllerIntegrationTest {
         Mockito.doReturn(Optional.of(USER_ENTITY))
                 .when(userJpaRepository).findByUsername(Mockito.anyString());
 
-        mockMvc.perform(get(LOGIN_ENDPOINT)
-                    .header(AUTHORIZATION, BASIC_DEFAULT_AUTH))
+        mockMvc.perform(get(ConsUtils.LOGIN_ENDPOINT)
+                    .header(ConsUtils.AUTHORIZATION, BASIC_DEFAULT_AUTH))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath(ConsUtils.FIELD_TOKEN).isNotEmpty());
 
@@ -150,8 +144,8 @@ class UserControllerIntegrationTest {
         Mockito.doReturn(Optional.empty())
                 .when(userJpaRepository).findByUsername(Mockito.anyString());
 
-        mockMvc.perform(get(LOGIN_ENDPOINT)
-            .header(AUTHORIZATION, BASIC_DEFAULT_AUTH))
+        mockMvc.perform(get(ConsUtils.LOGIN_ENDPOINT)
+            .header(ConsUtils.AUTHORIZATION, BASIC_DEFAULT_AUTH))
             .andExpect(status().isUnauthorized());
 
         Mockito.reset(userJpaRepository);
@@ -159,20 +153,20 @@ class UserControllerIntegrationTest {
 
     @Test
     void Should_ThrowsException_When_InvalidToken() throws Exception {
-        mockMvc.perform(get(LOGIN_ENDPOINT)
-                        .header(AUTHORIZATION, BEARER + " "))
+        mockMvc.perform(get(ConsUtils.LOGIN_ENDPOINT)
+                        .header(ConsUtils.AUTHORIZATION, ConsUtils.BEARER + ConsUtils.SPACE))
                 .andExpect(status().isUnauthorized());
     }
 
     private ResultActions postWithAdminToken(String dto, String url) throws Exception {
         return mockMvc.perform(post(url)
-                .header(AUTHORIZATION, BEARER + getAdminToken())
+                .header(ConsUtils.AUTHORIZATION, ConsUtils.BEARER + getAdminToken())
                 .content(dto)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
     private String getAdminToken() {
-        CustomUserDetails userDetail = new CustomUserDetails(USER, PASSWORD, Set.of(new SimpleGrantedAuthority(ROLE.concat(ConsUtils.ADMIN))), USER_ID);
+        CustomUserDetails userDetail = new CustomUserDetails(ConsUtils.USER, PASSWORD, Set.of(new SimpleGrantedAuthority(ConsUtils.ROLE.concat(ConsUtils.ADMIN))), ConsUtils.USER_ID_1);
         return JwtUtils.createToken(new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities()));
     }
 }

@@ -11,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping(ConsUtils.BASIC_USER_URL)
 @RequiredArgsConstructor
 public class UserController {
 
     private final IUserHandler handler;
 
-    @PostMapping("/aux-depot")
+    @PostMapping(ConsUtils.AUX_DEPOT_URL)
     public ResponseEntity<Void> createAuxDepotUser(@RequestBody @Valid UserReqDTO dto) {
         handler.createAuxDepotUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/login")
+    @GetMapping(ConsUtils.LOGIN_URL)
     public ResponseEntity<AuthResDTO> login() {
         return ResponseEntity.status(HttpStatus.OK).body(handler.login());
     }
