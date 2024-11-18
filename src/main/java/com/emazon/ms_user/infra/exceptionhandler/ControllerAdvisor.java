@@ -1,5 +1,6 @@
 package com.emazon.ms_user.infra.exceptionhandler;
 
+import com.emazon.ms_user.ConsUtils;
 import com.emazon.ms_user.infra.exception.EmailAlreadyExists;
 import com.emazon.ms_user.infra.exception.UnderAgeException;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,6 @@ public class ControllerAdvisor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestOnConstrains(HttpMessageNotReadableException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.builder().message(ex.getMessage().split(":")[0]).build());
+                .body(ExceptionResponse.builder().message(ex.getMessage().split(ConsUtils.SEMI_COLON_DELIMITER)[0]).build());
     }
 }
